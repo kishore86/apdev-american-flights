@@ -1,0 +1,8 @@
+http:
+  port: 8081
+db: 
+  host : "mudb.mulesoft-training-prod.com"
+  port : "3306"
+  user : "mule_pord"
+  password : "mule"
+  database : "training"

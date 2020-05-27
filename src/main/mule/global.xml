@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="38a4ca3f-3724-4d37-ad3f-ce8e1b4022bb" file="config/configuration-${env}.yaml" />
+	
+	 <http:listener-config name="american-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
+    </http:listener-config>
+	
+	<db:config name="AmericanFlights_Database_Config" doc:name="Database Config" doc:id="46bbe0ea-e018-421b-a2e7-444d9473fb90" >
+		<db:my-sql-connection port="${db.port}" host="${db.host}" user="${db.user}" password="${db.password}" database="${db.database}"/>
+	</db:config>
+	<global-property doc:name="Global Property" doc:id="1fbb6aeb-c745-4963-9a3f-b20b1c0d49f7" name="env" value="dev" />
+	<api-gateway:autodiscovery apiId="16099425" doc:name="API Autodiscovery" doc:id="c6201986-c789-4aee-86b4-2308e7793562" flowRef="american-main" />
+	
+	
+</mule>

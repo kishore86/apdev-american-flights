@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+	<flow name="getAllFlightsFlow" doc:id="7ca3d60e-bc28-4471-a430-7bd3060705da" >
+		<set-variable value='#[attributes.queryParams.destination default""]' doc:name="Set Variable" doc:id="450d6aed-03fe-4ed0-88d9-64269edfc799" variableName="code"/>
+		<choice doc:name="Choice" doc:id="e91b1d37-95e2-414d-a4ec-e664a395a5a7" >
+			<when expression="#[not isEmpty(vars.code)]" doc:id="236a0fb1-fe53-4637-b7d4-041d9b1202bf">
+				<db:select doc:name="getAllAmericanFlightsData" doc:id="077211e9-abc6-457e-8f8f-708ec842236f" config-ref="AmericanFlights_Database_Config">
+			<db:sql>select * from american where toAirport = :code</db:sql>
+			<db:input-parameters><![CDATA[#[code : vars.code]]]></db:input-parameters>
+		</db:select>
+			</when>
+			<otherwise >
+				<db:select doc:name="Select" doc:id="cc60758a-b98f-4711-aa0a-a7579d673835" config-ref="AmericanFlights_Database_Config">
+					<db:sql >select * from american</db:sql>
+				</db:select>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Transform Message" doc:id="0fd18602-830a-4a63-92a0-98cfa62e401d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	ID: payload01.ID,
+	code: (payload01.code1default "") ++ (payload01.code2 default ""),
+	price: payload01.price default 0,
+	departureDate: payload01.takeOffDate as String default "",
+	origin: payload01.fromAirport default "",
+	destination: payload01.toAirport default "",
+	emptySeats: payload01.seatsAvailable default 0,
+	plane: {
+		"type": payload01.planeType default "",
+		totalSeats: payload01.totalSeats default 0
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="14b8ea17-8b43-4bbb-97e7-e3e190908ba8" message='#["getAllFlightsFlow completed successfully "]'/>
+	</flow>
+	
+	
+	
+</mule>
