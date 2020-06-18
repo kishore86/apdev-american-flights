@@ -14,6 +14,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<db:sql>select * from american where toAirport = :code</db:sql>
 			<db:input-parameters><![CDATA[#[code : vars.code]]]></db:input-parameters>
 		</db:select>
+				<logger level="INFO" doc:name="Logger" doc:id="2ee8df19-c67a-4136-b858-19f4fad4c4cc" />
 			</when>
 			<otherwise >
 				<db:select doc:name="Select" doc:id="cc60758a-b98f-4711-aa0a-a7579d673835" config-ref="AmericanFlights_Database_Config">
